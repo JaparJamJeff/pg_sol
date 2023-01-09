@@ -1,0 +1,259 @@
+Skip to content
+Search or jump to…
+Pull requests
+Issues
+Codespaces
+Marketplace
+Explore
+ 
+@JaparJamJeff 
+JaparJamJeff
+/
+sol_pg_counter
+Private
+Code
+Issues
+Pull requests
+Actions
+Projects
+Security
+Insights
+Settings
+sol_pg_counter/pg_counter.txt
+@JaparJamJeff
+JaparJamJeff Add files via upload
+Latest commit 6d8b3ed 15 hours ago
+ History
+ 1 contributor
+215 lines (138 sloc)  5.49 KB
+
+// Anchor Counter 
+
+Structure of the Program
+As you probably have seen, our initial program is divided in 3 main sections: Functions, Data Validators and Data Structures.
+
+Smart Contract Functions: a section with the operations and logic of the program.
+
+Data Validators: a section for all the accounts that we will have to create and declare. As you can see, the Context<Name> from the functions is actually the same as the Data validators.
+
+Data Structures: the structure of the accounts / rust structs that we will use to store info! In the program is pretty clear, the Counter account will store 2 things:
+
+#[account]
+pub struct Counter {
+    authority: Pubkey,
+    count: u64,
+}
+So if we want to call the Count of the counter we will just have to do -> counter.count
+
+Create the counter: Initialize the counter
+Let's check the function that is called create_counter. In this function there is an empty space that we should complete to actually obtain our Counter Account.
+
+let counter = &mut ctx.accounts.counter;
+Now let's set our initial default parameters for our counter:
+
+The counter will start at 0
+Setting the authority to the person that is creating the Counter.
+counter.authority = ctx.accounts.authority.key();
+counter.count = 0;
+Nice! We have finished our first function.
+
+Function completed
+
+Create the counter: Data Validator
+In this section you don't have to write anything but it will be very important to look carefully at the CreateCounter Data Validator because it's relevant.
+
+Previously we have called the ctx.accounts.counter, that is basically this account:
+
+#[account(
+    init,
+    seeds=[authority.key().as_ref()],
+    bump,
+    payer=authority,
+    space=100
+)]
+counter: Account<'info, Counter>,
+This account is a PDA, you can obtain more info about PDAs in the Solana Cookbook. https://solanacookbook.com/core-concepts/pdas.html#facts
+
+
+But the important concepts to know about it is that it must be initialized and must contain a seed, a bump and some required space.
+
+In our case we used the authority key as the seed, we introduced a bump, we have set the authority to the payer(payer=person who is creating this PDA) and we have set space to 100, that is actually more than we need.
+
+Finally, we also declared the Authority Account. This account has been set to the Signer address.
+
+use anchor_lang::prelude::*;
+
+declare_id!("");
+
+#[program]
+// Smart contract functions
+pub mod counter {
+    use super::*;
+
+    pub fn create_counter(ctx: Context<CreateCounter>) -> Result<()> {
+        msg!("Creating a Counter!!");
+
+        let counter = &mut ctx.accounts.counter;
+        counter.authority = ctx.accounts.authority.key();
+        counter.count = 0;
+        
+        msg!("Current count is {}", counter.count);
+        msg!("The Admin PubKey is: {} ", counter.authority);
+
+        Ok(())
+    }
+
+    pub fn update_counter(ctx: Context<UpdateCounter>) -> Result<()> {
+        msg!("Adding 1 to the counter!!");
+
+        // Updating the counter must be here 
+
+        msg!("Current count is {}", counter.count);
+        msg!("{} remaining to reach 1000 ", 1000 - counter.count);
+
+        Ok(())
+    }
+
+}
+
+// Data validators
+#[derive(Accounts)]
+pub struct CreateCounter<'info> {
+    #[account(mut)]
+    authority: Signer<'info>,
+    #[account(
+        init,
+        seeds = [authority.key().as_ref()],
+        bump,
+        payer = authority,
+        space = 100
+    )]
+    counter: Account<'info, Counter>,
+    system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct UpdateCounter<'info> {
+    authority: Signer<'info>,
+    #[account(mut, has_one = authority)]
+    counter: Account<'info, Counter>,
+}
+
+// Data structures
+#[account]
+pub struct Counter {
+    authority: Pubkey,
+    count: u64,
+}
+
+
+
+solana airdrop
+solana deploy
+Keypair 
+39,251,186,28,210,29,105,69,33,53,168,222,176,48,90,158,239,28,42,216,56,13,196,196,240,23,1,108,62,160,179,117,39,145,220,41,202,253,126,70,146,206,148,233,95,109,32,238,52,238,113,88,23,51,116,88,80,174,27,3,150,51,3,103]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#[account(mut)]
+authority: Signer<'info>,
+
+
+
+libs.rs
+
+
+#[program]
+// Smart contract functions
+pub mod counter {
+    use super::*;
+
+    pub fn create_counter(ctx: Context<CreateCounter>) -> Result<()> {
+        msg!("Creating a Counter!!");
+
+        let counter = &mut ctx.accounts.counter;
+        counter.authority = ctx.accounts.authority.key();
+        counter.count = 0;
+        
+        msg!("Current count is {}", counter.count);
+        msg!("The Admin PubKey is: {} ", counter.authority);
+
+        Ok(())
+    }
+
+    pub fn update_counter(ctx: Context<UpdateCounter>) -> Result<()> {
+        msg!("Adding 1 to the counter!!");
+
+        // Updating the counter must be here 
+
+        msg!("Current count is {}", counter.count);
+        msg!("{} remaining to reach 1000 ", 1000 - counter.count);
+
+        Ok(())
+    }
+
+}
+
+// Data validators
+#[derive(Accounts)]
+pub struct CreateCounter<'info> {
+    #[account(mut)]
+    authority: Signer<'info>,
+    #[account(
+        init,
+        seeds = [authority.key().as_ref()],
+        bump,
+        payer = authority,
+        space = 100
+    )]
+    counter: Account<'info, Counter>,
+    system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct UpdateCounter<'info> {
+    authority: Signer<'info>,
+    #[account(mut, has_one = authority)]
+    counter: Account<'info, Counter>,
+}
+
+// Data structures
+#[account]
+Footer
+© 2023 GitHub, Inc.
+Footer navigation
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
+sol_pg_counter/pg_counter.txt at main · JaparJamJeff/sol_pg_counter
