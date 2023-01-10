@@ -1,31 +1,4 @@
-Skip to content
-Search or jump to…
-Pull requests
-Issues
-Codespaces
-Marketplace
-Explore
- 
-@JaparJamJeff 
-JaparJamJeff
-/
-sol_pg_counter
-Private
-Code
-Issues
-Pull requests
-Actions
-Projects
-Security
-Insights
-Settings
-sol_pg_counter/pg_counter.txt
-@JaparJamJeff
-JaparJamJeff Add files via upload
-Latest commit 6d8b3ed 15 hours ago
- History
- 1 contributor
-215 lines (138 sloc)  5.49 KB
+
 
 // Anchor Counter 
 
@@ -242,18 +215,3 @@ pub struct UpdateCounter<'info> {
 
 // Data structures
 #[account]
-Footer
-© 2023 GitHub, Inc.
-Footer navigation
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-sol_pg_counter/pg_counter.txt at main · JaparJamJeff/sol_pg_counter
